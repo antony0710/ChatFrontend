@@ -37,6 +37,14 @@ type HistoryCountResponse = {
     totalMessages?: number;
 };
 
+type UniqueUsersResponse = {
+    uniqueUsers?: number;
+};
+
+type UniqueUsers24hResponse = {
+    uniqueUsers24h?: number;
+};
+
 const getApiBaseUrl = () => {
     try {
         if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) {
@@ -87,6 +95,8 @@ export default function DYSChat() {
     const [topUsers, setTopUsers] = React.useState<TopUser[]>([]);
     const [recentMessages, setRecentMessages] = React.useState<DanmakuMessage[]>([]);
     const [totalMessages, setTotalMessages] = React.useState(0);
+    const [uniqueUsers, setUniqueUsers] = React.useState(0);
+    const [uniqueUsers24h, setUniqueUsers24h] = React.useState(0);
     const [sinceHours, setSinceHours] = React.useState<number | null>(null);
     const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
     const [error, setError] = React.useState<string | null>(null);
@@ -117,16 +127,26 @@ export default function DYSChat() {
         setError(null);
 
         try {
-            const [topUsersResponse, recentMessagesResponse, historyCountResponse] = await Promise.all([
+            const [
+                topUsersResponse,
+                recentMessagesResponse,
+                historyCountResponse,
+                uniqueUsersResponse,
+                uniqueUsers24hResponse
+            ] = await Promise.all([
                 fetchJson<TopUsersResponse>(`${apiBaseUrl}/stats/top-users?limit=${TOP_USERS_LIMIT}`),
                 fetchJson<RecentMessagesResponse>(`${apiBaseUrl}/messages/recent?limit=${RECENT_MESSAGES_LIMIT}`),
                 fetchJson<HistoryCountResponse>(`${apiBaseUrl}/stats/history-count`),
+                fetchJson<UniqueUsersResponse>(`${apiBaseUrl}/stats/unique-users`),
+                fetchJson<UniqueUsers24hResponse>(`${apiBaseUrl}/stats/unique-users-24h`),
             ]);
 
             console.log('[DYSChat] API responses received', {
                 topUsersCount: topUsersResponse.topUsers?.length ?? 0,
                 recentMessagesCount: recentMessagesResponse.messages?.length ?? 0,
                 totalMessages: historyCountResponse.totalMessages ?? 0,
+                uniqueUsers: uniqueUsersResponse.uniqueUsers ?? 0,
+                uniqueUsers24h: uniqueUsers24hResponse.uniqueUsers24h ?? 0,
                 sinceHours: topUsersResponse.sinceHours,
             });
 
@@ -136,6 +156,8 @@ export default function DYSChat() {
             setSinceHours(topUsersResponse.sinceHours ?? null);
             setRecentMessages(recentMessagesResponse.messages ?? []);
             setTotalMessages(historyCountResponse.totalMessages ?? 0);
+            setUniqueUsers(uniqueUsersResponse.uniqueUsers ?? 0);
+            setUniqueUsers24h(uniqueUsers24hResponse.uniqueUsers24h ?? 0);
             setLastUpdated(Date.now());
         } catch (err) {
             console.error('[DYSChat] Failed to fetch dashboard data', err);
@@ -202,15 +224,33 @@ export default function DYSChat() {
                 <Flex direction={{ base: 'column', lg: 'row' }} gap={4} align="stretch">
                     <Box flex="1" bg={panelBg} border="1px solid" borderColor={panelBorder} borderRadius="lg" p={6}
                     >
-                        <Text fontSize="sm" textTransform="uppercase" color={mutedText} letterSpacing="wide">
-                            Captured Messages
-                        </Text>
-                        <Heading color={'red.500'} size="2xl">{formatNumber(totalMessages)}</Heading>
-                        <Text mt={2} color={mutedText} fontSize="sm">
-                            {lastUpdated
-                                ? `Last updated ${new Date(lastUpdated).toLocaleTimeString()}${isFetching ? ' · refreshing...' : ''}`
-                                : 'Waiting for first update...'}
-                        </Text>
+                        <Flex direction="column" gap={4}>
+                            <Box>
+                                <Text fontSize="sm" textTransform="uppercase" color={mutedText} letterSpacing="wide">
+                                    Captured Messages
+                                </Text>
+                                <Heading color={'red.500'} size="2xl">{formatNumber(totalMessages)}</Heading>
+                            </Box>
+                            <Flex gap={8}>
+                                <Box>
+                                    <Text fontSize="sm" textTransform="uppercase" color={mutedText} letterSpacing="wide">
+                                        Unique Users (All Time)
+                                    </Text>
+                                    <Heading size="lg">{formatNumber(uniqueUsers)}</Heading>
+                                </Box>
+                                <Box>
+                                    <Text fontSize="sm" textTransform="uppercase" color={mutedText} letterSpacing="wide">
+                                        Unique Users (24h)
+                                    </Text>
+                                    <Heading size="lg">{formatNumber(uniqueUsers24h)}</Heading>
+                                </Box>
+                            </Flex>
+                            <Text mt={2} color={mutedText} fontSize="sm">
+                                {lastUpdated
+                                    ? `Last updated ${new Date(lastUpdated).toLocaleTimeString()}${isFetching ? ' · refreshing...' : ''}`
+                                    : 'Waiting for first update...'}
+                            </Text>
+                        </Flex>
                     </Box>
                     <Box
                         flex="1"
