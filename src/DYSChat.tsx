@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
 
-const DEFAULT_BASE_URL = 'http://localhost:3000';
+const DEFAULT_BASE_URL = '/api';
 const TOP_USERS_LIMIT = 100;
 const RECENT_MESSAGES_LIMIT = 100;
 const REFRESH_INTERVAL_MS = 5000;
@@ -383,18 +383,18 @@ export default function DYSChat() {
                         p={6}
                         maxH="80vh"
                         overflowY="auto"
-                                                css={{
-      "&::-webkit-scrollbar": {
-        width: "4px",
-      },
-      "&::-webkit-scrollbar-track": {
-        width: "6px",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        background: "#020202ff",
-        borderRadius: "24px",
-      },
-    }}
+                        css={{
+                            "&::-webkit-scrollbar": {
+                                width: "4px",
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                width: "6px",
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                background: "#020202ff",
+                                borderRadius: "24px",
+                            },
+                        }}
                     >
                         <Flex justify="space-between" align="center" mb={4}>
                             <Heading color={mutedText} size="md">Top {TOP_USERS_LIMIT} Senders</Heading>
@@ -437,18 +437,18 @@ export default function DYSChat() {
                         p={6}
                         maxH="80vh"
                         overflowY="auto"
-                                                                        css={{
-      "&::-webkit-scrollbar": {
-        width: "4px",
-      },
-      "&::-webkit-scrollbar-track": {
-        width: "6px",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        background: "#020202ff",
-        borderRadius: "24px",
-      },
-    }}
+                        css={{
+                            "&::-webkit-scrollbar": {
+                                width: "4px",
+                            },
+                            "&::-webkit-scrollbar-track": {
+                                width: "6px",
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                background: "#020202ff",
+                                borderRadius: "24px",
+                            },
+                        }}
                     >
                         <Flex justify="space-between" align="center" mb={4}>
                             <Heading color={mutedText} size="md">Most Recent Messages</Heading>
