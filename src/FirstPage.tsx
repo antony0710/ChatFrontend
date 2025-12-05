@@ -1,7 +1,6 @@
-import React from 'react';
-import {Container} from '@chakra-ui/react';
-import {Button} from '@chakra-ui/react';
-import {useNavigate} from 'react-router-dom';
+import { Container } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 const FirstPage = () => {
   const navigate = useNavigate();
   return (

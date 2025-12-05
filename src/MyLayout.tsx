@@ -1,8 +1,6 @@
-import { Container, Stack, Flex, DataList } from '@chakra-ui/react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Container, Stack, Flex } from '@chakra-ui/react';
+import { Link, Outlet } from 'react-router-dom';
 const MyLayout = () => {
-  const [items, setItems] = useState<any[]>([]);
 
   return (
     <>
