@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, Button, Container, Flex, Heading, Text } from '@chakra-ui/react';
+import { Avatar, Badge, Box, Button, Container, Flex, Heading, HStack, Image, Text } from '@chakra-ui/react';
 
-const DEFAULT_BASE_URL = '/api';
+// const DEFAULT_BASE_URL = '/api';
+const DEFAULT_BASE_URL = 'http://localhost:3000';
 const TOP_USERS_LIMIT = 100;
 const RECENT_MESSAGES_LIMIT = 100;
 const REFRESH_INTERVAL_MS = 5000;
@@ -20,6 +21,14 @@ type DanmakuMessage = {
     timestamp?: number | string | null;
     created_at?: string | null;
     room_id?: number | string | null;
+    uface?: string | null;
+    guard_level?: number;
+    fans_medal_wearing_status?: boolean;
+    fans_medal_name?: string | null;
+    fans_medal_level?: number;
+    emoji_img_url?: string | null;
+    is_admin?: number;
+    reply_uname?: string | null;
 };
 
 type TopUsersResponse = {
@@ -302,7 +311,7 @@ export default function DYSChat() {
                                 />
                             </Box>
                             <Button
-                                colorScheme="purple"
+                                colorPalette="black"
                                 onClick={handleUserSearch}
                                 disabled={isSearchingUser}
                             >
@@ -318,7 +327,7 @@ export default function DYSChat() {
                                     <Text fontSize="sm" color={mutedText}>
                                         Latest search captured {userMessages.length} message{userMessages.length === 1 ? '' : 's'} for {lastSearchLabel || 'selected user'}
                                     </Text>
-                                    <Button size="sm" variant="outline" colorScheme="purple" onClick={() => setIsUserModalOpen(true)}>
+                                    <Button size="sm" variant="outline" colorPalette="black" onClick={() => setIsUserModalOpen(true)}>
                                         View Results
                                     </Button>
                                 </Flex>
@@ -329,7 +338,7 @@ export default function DYSChat() {
                         alignSelf={{ base: 'stretch', md: 'auto' }}
                         onClick={fetchDashboardData}
                         disabled={isFetching}
-                        colorScheme="blue"
+                        colorPalette="black"
                         minW="150px"
                     >
                         {isFetching ? 'Refreshing…' : 'Refresh Now'}
@@ -391,20 +400,64 @@ export default function DYSChat() {
                                                 borderRadius="md"
                                                 p={4}
                                             >
-                                                <Flex justify="space-between" align={{ base: 'flex-start', md: 'center' }} gap={2}>
-                                                    <Text fontWeight="bold">
-                                                        {message.uname?.trim() || message.open_id || 'Anonymous'}
-                                                    </Text>
-                                                    <Text fontSize="sm" color="gray.500">
-                                                        {formatMessageTimestamp(message)}
-                                                    </Text>
+                                                <Flex gap={3}>
+                                                    <Avatar.Root size="sm">
+                                                        {message.uface && <Avatar.Image src={message.uface} />}
+                                                        <Avatar.Fallback>
+                                                            {(message.uname || 'U').slice(0, 1).toUpperCase()}
+                                                        </Avatar.Fallback>
+                                                    </Avatar.Root>
+                                                    <Box flex="1">
+                                                        <Flex justify="space-between" align="flex-start" gap={2}>
+                                                            <HStack wrap="wrap" gap={2}>
+                                                                <Text fontWeight="bold">
+                                                                    {message.uname?.trim() || message.open_id || 'Anonymous'}
+                                                                </Text>
+
+                                                                {/* Fans Medal */}
+                                                                {message.fans_medal_wearing_status && message.fans_medal_name && (
+                                                                    <Badge colorPalette="orange" variant="solid" fontSize="0.7em">
+                                                                        {message.fans_medal_name} {message.fans_medal_level}
+                                                                    </Badge>
+                                                                )}
+
+                                                                {/* Guard Level */}
+                                                                {message.guard_level && message.guard_level > 0 && (
+                                                                    <Badge colorPalette="red" variant="outline" fontSize="0.7em">
+                                                                        Guard {message.guard_level}
+                                                                    </Badge>
+                                                                )}
+
+                                                                {/* Admin */}
+                                                                {!!message.is_admin && (
+                                                                    <Badge colorPalette="purple" fontSize="0.7em">Admin</Badge>
+                                                                )}
+                                                            </HStack>
+
+                                                            <Text fontSize="xs" color="gray.500" whiteSpace="nowrap">
+                                                                {formatMessageTimestamp(message)}
+                                                            </Text>
+                                                        </Flex>
+
+                                                        {/* Reply Context */}
+                                                        {message.reply_uname && (
+                                                            <Text fontSize="xs" color="gray.500" mt={1}>
+                                                                Replying to @{message.reply_uname}
+                                                            </Text>
+                                                        )}
+
+                                                        {/* Message Content */}
+                                                        <Box mt={1}>
+                                                            <Text>{message.msg || '—'}</Text>
+                                                        </Box>
+
+                                                        {message.room_id && (
+                                                            <Text mt={1} fontSize="xs" color="gray.500">
+                                                                Room: {message.room_id}
+                                                            </Text>
+                                                        )}
+                                                    </Box>
                                                 </Flex>
-                                                <Text mt={2}>{message.msg || '—'}</Text>
-                                                {message.room_id && (
-                                                    <Text mt={2} fontSize="xs" color="gray.500">
-                                                        Room: {message.room_id}
-                                                    </Text>
-                                                )}
                                             </Box>
                                         ))}
                                     </Box>
@@ -508,20 +561,65 @@ export default function DYSChat() {
                                         borderRadius="md"
                                         p={4}
                                     >
-                                        <Flex justify="space-between" align={{ base: 'flex-start', md: 'center' }} gap={2}>
-                                            <Text fontWeight="bold">
-                                                {message.uname?.trim() || message.open_id || 'Anonymous'}
-                                            </Text>
-                                            <Text fontSize="sm" color={mutedText}>
-                                                {formatMessageTimestamp(message)}
-                                            </Text>
+                                        <Flex gap={3}>
+                                            <Avatar.Root size="sm">
+                                                {message.uface && <Avatar.Image src={message.uface} />}
+                                                <Avatar.Fallback>
+                                                    {(message.uname || 'U').slice(0, 1).toUpperCase()}
+                                                </Avatar.Fallback>
+                                            </Avatar.Root>
+                                            <Box flex="1">
+                                                <Flex justify="space-between" align="flex-start" gap={2}>
+                                                    <HStack wrap="wrap" gap={2}>
+                                                        <Text fontWeight="bold">
+                                                            {message.uname?.trim() || message.open_id || 'Anonymous'}
+                                                        </Text>
+
+                                                        {/* Fans Medal */}
+                                                        {message.fans_medal_wearing_status && message.fans_medal_name && (
+                                                            <Badge colorPalette="orange" variant="solid" fontSize="0.7em">
+                                                                {message.fans_medal_name} {message.fans_medal_level}
+                                                            </Badge>
+                                                        )}
+
+                                                        {/* Guard Level */}
+                                                        {message.guard_level && message.guard_level > 0 && (
+                                                            <Badge colorPalette="red" variant="outline" fontSize="0.7em">
+                                                                Guard {message.guard_level}
+                                                            </Badge>
+                                                        )}
+
+                                                        {/* Admin */}
+                                                        {!!message.is_admin && (
+                                                            <Badge colorPalette="purple" fontSize="0.7em">Admin</Badge>
+                                                        )}
+                                                    </HStack>
+
+                                                    <Text fontSize="xs" color={mutedText} whiteSpace="nowrap">
+                                                        {formatMessageTimestamp(message)}
+                                                    </Text>
+                                                </Flex>
+
+                                                {/* Reply Context */}
+                                                {message.reply_uname && (
+                                                    <Text fontSize="xs" color="gray.500" mt={1}>
+                                                        Replying to @{message.reply_uname}
+                                                    </Text>
+                                                )}
+
+                                                {/* Message Content */}
+                                                <Box mt={1}>
+
+                                                    <Text>{message.msg || '—'}</Text>
+                                                </Box>
+
+                                                {message.room_id && (
+                                                    <Text mt={1} fontSize="xs" color={mutedText}>
+                                                        Room: {message.room_id}
+                                                    </Text>
+                                                )}
+                                            </Box>
                                         </Flex>
-                                        <Text mt={2}>{message.msg || '—'}</Text>
-                                        {message.room_id && (
-                                            <Text mt={2} fontSize="xs" color={mutedText}>
-                                                Room: {message.room_id}
-                                            </Text>
-                                        )}
                                     </Box>
                                 ))}
                             </Box>
