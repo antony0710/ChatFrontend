@@ -9,8 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Default DB path relative to this backend/index.js file
-const DEFAULT_DB_PATH = path.resolve(__dirname, '../../blivedm/danmaku.db');
+//This is to be using for development and testing of the backend server
+const DEFAULT_DB_PATH = path.resolve(__dirname, 'danmaku.db');
 
 // Ensure the uploads directory exists
 function openDb(dbPath) {

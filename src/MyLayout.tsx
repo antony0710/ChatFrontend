@@ -1,4 +1,4 @@
-import { Container, Stack, Flex } from '@chakra-ui/react';
+import { Container, Stack, Flex, Button } from '@chakra-ui/react';
 import { Link, Outlet } from 'react-router-dom';
 const MyLayout = () => {
 
@@ -26,6 +26,7 @@ const MyLayout = () => {
         <Container display={'flex'} flexDirection="row" top={'5vh'}>
           {['/', '/first-page', '/game-page1'].includes(location.pathname) && (
             <Container width={'20%'} padding={0} mt={5}>
+              <Button></Button>
               {/* <DataList.Root orientation="horizontal">
                             {items.map((item) => (
                                 <DataList.Item key={item.label}>
