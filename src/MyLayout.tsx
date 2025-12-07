@@ -4,13 +4,17 @@ const MyLayout = () => {
 
   return (
     <>
-      <Container ml={0} mt={0}>
+      <Container maxWidth="100vw" p={0} m={0}>
         <Container
           height={'5vh'}
           backgroundColor={'white'}
           zIndex={1}
           display={'flex'}
-          position={'fixed'}>
+          position={'fixed'}
+          width="100%"
+          left={0}
+          top={0}
+          justifyContent="center">
           <Flex height={'1vh'}></Flex>
           <Stack
             direction={{ base: 'column', md: 'row' }}
@@ -21,9 +25,20 @@ const MyLayout = () => {
             <Link to="/">首頁</Link>
             <Link to="/first-page">First Page</Link>
             <Link to="/dys-chat">DYS Chat</Link>
+            <Link to="/second-page">Second Page</Link>
           </Stack>
         </Container>
-        <Container display={'flex'} flexDirection="row" top={'5vh'}>
+        <Container 
+          display={'flex'} 
+          flexDirection="row" 
+          mt={'5vh'}
+          pt={5}
+          justifyContent="center"
+          alignItems="flex-start"
+          maxWidth="100vw"
+          width="100%"
+          p={0}
+        >
           {['/', '/first-page', '/game-page1'].includes(location.pathname) && (
             <Container width={'20%'} padding={0} mt={5}>
               <Button></Button>
@@ -36,9 +51,8 @@ const MyLayout = () => {
                         </DataList.Root> */}
             </Container>
           )}
-          <Container>
+          <Container flex="1" textAlign="center">
             <Outlet></Outlet>
-
           </Container>
         </Container>
       </Container>
