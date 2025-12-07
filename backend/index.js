@@ -105,7 +105,8 @@ function parseHours(raw, fallback) {
 }
 
 function buildTimestampOrderClause() {
-    return "COALESCE(timestamp, strftime('%s', created_at))";
+    // timestamp is in milliseconds, created_at is ISO string - convert both to milliseconds for consistent ordering
+    return "COALESCE(timestamp, strftime('%s', created_at) * 1000)";
 }
 
 app.get('/stats/history-count', async (req, res) => {
@@ -134,8 +135,9 @@ app.get('/stats/unique-users-24h', async (req, res) => {
     try {
         const dbPath = resolveDbPath();
         const hours = 24;
-        const cutoff = Math.floor(Date.now() / 1000) - hours * 3600;
-        const sql = `SELECT COUNT(DISTINCT open_id) AS count FROM danmaku_messages WHERE ${buildTimestampOrderClause()} >= ?`;
+        // Convert to milliseconds for comparison with timestamp field (which is in milliseconds)
+        const cutoff = Date.now() - hours * 3600 * 1000;
+        const sql = `SELECT COUNT(DISTINCT open_id) AS count FROM danmaku_messages WHERE timestamp >= ?`;
         const rows = await all(dbPath, sql, [cutoff]);
         res.json({ uniqueUsers24h: rows?.[0]?.count || 0 });
     } catch (err) {
@@ -148,7 +150,8 @@ app.get('/stats/top-users', async (req, res) => {
         const dbPath = resolveDbPath();
         const limit = parseLimit(req.query.limit || '10', 10, 100);
         const hours = parseHours(req.query.hours || '24', 24);
-        const cutoff = Math.floor(Date.now() / 1000) - hours * 3600;
+        // Convert to milliseconds for comparison with timestamp field
+        const cutoff = Date.now() - hours * 3600 * 1000;
         const sql = `
             SELECT uname, open_id, COUNT(*) AS messageCount
             FROM danmaku_messages
