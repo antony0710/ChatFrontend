@@ -1,0 +1,6 @@
+// wrangler.jsonc at repo root
+{
+  "name": "chatfrontend",
+  "compatibility_date": "2025-01-01",
+  "main": "src/index.ts" // or your entry point
+}
