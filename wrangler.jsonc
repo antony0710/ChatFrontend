@@ -2,5 +2,5 @@
 {
   "name": "chatfrontend",
   "compatibility_date": "2025-01-01",
-  "main": "src/index.ts" // or your entry point
+  "main": "./dist" // or your entry point
 }
