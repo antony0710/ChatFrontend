@@ -1,8 +1,8 @@
 import React from 'react';
-import { Avatar, Badge, Box, Button, Container, Flex, Heading, HStack, Image, Text } from '@chakra-ui/react';
+import { Avatar, Badge, Box, Button, Container, Flex, Heading, HStack, Text } from '@chakra-ui/react';
 
 // const DEFAULT_BASE_URL = '/api';
-const DEFAULT_BASE_URL = 'http://localhost:3000';
+const DEFAULT_BASE_URL = 'https://47.237.20.153/api';
 const TOP_USERS_LIMIT = 100;
 const RECENT_MESSAGES_LIMIT = 100;
 const REFRESH_INTERVAL_MS = 5000;
@@ -55,6 +55,7 @@ type UniqueUsers24hResponse = {
 };
 
 const getApiBaseUrl = () => {
+    
     try {
         if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) {
             return import.meta.env.VITE_API_BASE_URL;
